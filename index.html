@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>JOHNTAPCARD — Printing Services</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #ffffff;
+      line-height: 1.5;
+
+      display: flex;
+      flex-direction: column;
+
+      overflow: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+
+    /* ==============================
+       FIXED HEADER
+    =============================== */
+
+    .hero {
+      flex-shrink: 0;
+
+      position: relative;
+      z-index: 1000;
+
+      padding: 15px 15px 13px;
+
+      text-align: center;
+
+      background:
+        radial-gradient(
+          circle at top,
+          #1b1b1b 0%,
+          #090909 45%,
+          #050505 100%
+        );
+
+      border-bottom: 1px solid #202020;
+
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+
+      position: absolute;
+
+      width: 150px;
+      height: 150px;
+
+      background: rgba(255,255,255,0.035);
+
+      border-radius: 50%;
+
+      top: -90px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      filter: blur(5px);
+
+      pointer-events: none;
+    }
+
+    .nfc-badge {
+      position: relative;
+
+      display: inline-block;
+
+      padding: 4px 9px;
+
+      border: 1px solid #333;
+
+      border-radius: 50px;
+
+      color: #aaa;
+
+      font-size: 8px;
+
+      letter-spacing: 1.5px;
+
+      margin-bottom: 5px;
+
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      position: relative;
+
+      font-size: 20px;
+
+      font-weight: 800;
+
+      letter-spacing: -0.5px;
+
+      margin-bottom: 2px;
+    }
+
+    .hero p {
+      position: relative;
+
+      color: #888;
+
+      font-size: 11px;
+    }
+
+    .tap-text {
+      position: relative;
+
+      margin-top: 5px;
+
+      font-size: 8px;
+
+      color: #666;
+
+      letter-spacing: 1px;
+    }
+
+
+    /* ==============================
+       SCROLLABLE CONTENT
+    =============================== */
+
+    main {
+      flex: 1;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      -webkit-overflow-scrolling: touch;
+
+      padding: 30px 0 35px;
+    }
+
+    .section-title {
+      font-size: 24px;
+
+      font-weight: 750;
+
+      margin-bottom: 8px;
+    }
+
+    .section-description {
+      color: #888;
+
+      font-size: 14px;
+
+      margin-bottom: 22px;
+    }
+
+
+    /* ==============================
+       SEND CARDS
+    =============================== */
+
+    .send-card {
+      display: flex;
+
+      align-items: center;
+
+      width: 100%;
+
+      min-height: 76px;
+
+      padding: 15px;
+
+      margin-bottom: 12px;
+
+      background: #0d0d0d;
+
+      border: 1px solid #222;
+
+      border-radius: 16px;
+
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .send-card:hover {
+      transform: translateY(-2px);
+
+      background: #121212;
+
+      border-color: #444;
+    }
+
+    .send-card:active {
+      transform: scale(0.98);
+    }
+
+    .icon-box {
+      width: 46px;
+      height: 46px;
+
+      min-width: 46px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #181818;
+
+      border: 1px solid #292929;
+
+      border-radius: 13px;
+
+      font-size: 21px;
+
+      margin-right: 14px;
+    }
+
+    .card-content {
+      flex: 1;
+
+      min-width: 0;
+    }
+
+    .card-title {
+      display: block;
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+      color: #fff;
+
+      margin-bottom: 3px;
+    }
+
+    .card-description {
+      display: block;
+
+      color: #777;
+
+      font-size: 12px;
+    }
+
+    .arrow {
+      color: #777;
+
+      font-size: 22px;
+
+      margin-left: 10px;
+    }
+
+
+    /* ==============================
+       SHOP INFORMATION
+    =============================== */
+
+    .shop-info {
+      margin-top: 35px;
+    }
+
+    .info-box {
+      padding: 18px;
+
+      background: #0d0d0d;
+
+      border: 1px solid #222;
+
+      border-radius: 16px;
+    }
+
+    .info-row {
+      display: flex;
+
+      align-items: flex-start;
+
+      gap: 12px;
+
+      padding: 13px 0;
+
+      border-bottom: 1px solid #1c1c1c;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-icon {
+      width: 32px;
+
+      min-width: 32px;
+
+      height: 32px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #181818;
+
+      border-radius: 9px;
+
+      font-size: 14px;
+    }
+
+    .info-content span {
+      display: block;
+    }
+
+    .info-label {
+      color: #666;
+
+      font-size: 10px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1px;
+
+      margin-bottom: 2px;
+    }
+
+    .info-value {
+      color: #ddd;
+
+      font-size: 13px;
+    }
+
+
+    /* ==============================
+       FIXED FOOTER
+    =============================== */
+
+    footer {
+      flex-shrink: 0;
+
+      position: relative;
+
+      z-index: 1000;
+
+      padding: 16px 0 18px;
+
+      background: #050505;
+
+      border-top: 1px solid #1b1b1b;
+
+      text-align: center;
+    }
+
+    .footer-name {
+      font-size: 14px;
+
+      font-weight: 700;
+
+      margin-bottom: 3px;
+    }
+
+    .footer-text {
+      color: #666;
+
+      font-size: 10px;
+
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+
+      justify-content: center;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      padding: 7px 12px;
+
+      border: 1px solid #242424;
+
+      border-radius: 9px;
+
+      color: #999;
+
+      font-size: 10px;
+
+      transition: 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: #fff;
+
+      border-color: #444;
+
+      background: #111;
+    }
+
+    .copyright {
+      margin-top: 10px;
+
+      color: #444;
+
+      font-size: 9px;
+    }
+
+
+    /* ==============================
+       MOBILE
+    =============================== */
+
+    @media (max-width: 400px) {
+
+      .hero {
+        padding: 13px 12px 11px;
+      }
+
+      .hero h1 {
+        font-size: 18px;
+      }
+
+      .hero p {
+        font-size: 10px;
+      }
+
+      .tap-text {
+        font-size: 8px;
+      }
+
+      main {
+        padding: 25px 0 30px;
+      }
+
+      .section-title {
+        font-size: 22px;
+      }
+
+      .send-card {
+        min-height: 70px;
+      }
+
+      .icon-box {
+        width: 42px;
+        height: 42px;
+
+        min-width: 42px;
+      }
+
+      footer {
+        padding: 13px 0 15px;
+      }
+    }
+
+.icon-box img {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  object-fit: contain;
+  display: block;
+}
+  </style>
+</head>
+
+
+<body>
+
+
+  <!-- ==============================
+       FIXED HEADER
+  =============================== -->
+
+  <header class="hero">
+
+    <div class="nfc-badge">
+      NFC Connected
+    </div>
+
+    <h1>
+      JOHNTAPCARD
+    </h1>
+
+    <p>
+      Printing Services
+    </p>
+
+    <div class="tap-text">
+      TAP • SEND • PRINT
+    </div>
+
+  </header>
+
+
+  <!-- ==============================
+       SCROLLABLE CONTENT
+  =============================== -->
+
+  <main>
+
+    <div class="container">
+
+
+      <h2 class="section-title">
+        Send Your Files
+      </h2>
+
+      <p class="section-description">
+        Choose how you'd like to send your files to our printing shop.
+      </p>
+
+
+      <!-- MESSENGER -->
+
+      <a
+        class="send-card"
+        href="https://m.me/61594294572667"
+        target="_blank"
+        rel="noopener"
+      >
+
+       <div class="icon-box">
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg"
+    alt="Messenger"
+  >
+</div>
+
+        <div class="card-content">
+
+          <span class="card-title">
+            Send via Messenger
+          </span>
+
+          <span class="card-description">
+            Message us directly on Messenger.
+          </span>
+
+        </div>
+
+        <span class="arrow">
+          ›
+        </span>
+
+      </a>
+
+
+      <!-- FACEBOOK -->
+
+      <a
+        class="send-card"
+        href="https://www.facebook.com/profile.php?id=61594294572667"
+        target="_blank"
+        rel="noopener"
+      >
+
+       <div class="icon-box">
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
+    alt="Facebook"
+  >
+</div>
+
+        <div class="card-content">
+
+          <span class="card-title">
+            Visit Facebook
+          </span>
+
+          <span class="card-description">
+            Visit our Facebook profile.
+          </span>
+
+        </div>
+
+        <span class="arrow">
+          ›
+        </span>
+
+      </a>
+
+
+      <!-- EMAIL -->
+
+      <a
+        class="send-card"
+        href="mailto:johntapcard@gmail.com?subject=Printing%20Order&body=Hi!%20I'd%20like%20to%20send%20files%20for%20printing."
+      >
+
+<div class="icon-box">
+  <img
+    src="gmail.png"
+    alt="Email"
+  >
+</div>
+
+
+
+        <div class="card-content">
+
+          <span class="card-title">
+            Send via Email
+          </span>
+
+          <span class="card-description">
+            Send your files to our email.
+          </span>
+
+        </div>
+
+        <span class="arrow">
+          ›
+        </span>
+
+      </a>
+
+
+      <!-- SHOP INFORMATION -->
+
+      <section class="shop-info">
+
+        <h2 class="section-title">
+          Shop Information
+        </h2>
+
+        <p class="section-description">
+          Need help? Contact us using any of the options above.
+        </p>
+
+
+        <div class="info-box">
+
+
+          <!-- ADDRESS -->
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📍
+            </div>
+
+            <div class="info-content">
+
+              <span class="info-label">
+                Address
+              </span>
+
+              <span class="info-value">
+                MALVAR BATANGAS
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📞
+            </div>
+
+            <div class="info-content">
+
+              <span class="info-label">
+                Phone
+              </span>
+
+              <span class="info-value">
+
+                <a href="tel:09952860172">
+                  0995 286 0172
+                </a>
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- OPENING HOURS -->
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              🕒
+            </div>
+
+            <div class="info-content">
+
+              <span class="info-label">
+                Opening Hours
+              </span>
+
+              <span class="info-value">
+                8:00 Am - 4:00Pm <br>Mon-Fri
+                
+              </span>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <!-- EXTRA SPACE AT BOTTOM -->
+
+      <div style="height: 20px;"></div>
+
+
+    </div>
+
+  </main>
+
+
+  <!-- ==============================
+       FIXED FOOTER
+  =============================== -->
+
+  <footer>
+
+    <div class="container">
+
+      <div class="footer-name">
+        JOHNTAPCARD
+      </div>
+
+      <div class="footer-text">
+        Printing Services
+      </div>
+
+
+    
+      <div class="copyright">
+        © 2026 JOHNTAPCARD. All rights reserved.
+      </div>
+
+    </div>
+
+  </footer>
+
+
+</body>
+</html>
